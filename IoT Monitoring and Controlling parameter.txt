@@ -1,0 +1,11 @@
+Pins
+1-DHT
+2-MQ135
+3-Stepper
+4-Litter Motor
+5-Anti-Becterial Pump
+6-Electronic Valve
+7-Flow Sensor
+8-LCD Rx Tx
+10-Liquid Level
+11-Chick Repelent system (hard wire logic)
