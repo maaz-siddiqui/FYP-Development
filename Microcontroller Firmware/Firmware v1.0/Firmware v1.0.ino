@@ -1,7 +1,17 @@
 //libraries
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
 #include "DHT.h"
 #include <MQUnifiedsensor.h>  // MQ135 Enable
 #include <SoftwareSerial.h>
+
+#define BLYNK_TEMPLATE_ID "TMPLqo4MJG8x"
+#define BLYNK_DEVICE_NAME "IoT"
+#define BLYNK_AUTH_TOKEN "gkp3KEPrshlwgZ00bzexG33Jd64ayy_U"
+
+char ssid[]= "B-94";
+char pass[]= "d24b687c";
 
 #ifndef ESP32
 #pragma message(THIS EXAMPLE IS FOR ESP32 ONLY!)
@@ -27,11 +37,10 @@
 
 MQUnifiedsensor MQ135(board, Voltage_Resolution, ADC_Bit_Resolution, pin, type);
 DHT dht(dhtPin, DHTTYPE);
-SoftwareSerial mySerial(3, 1);
 
 void setup(void){
-  Serial.begin(115200);
-  mySerial.begin(115200);
+  Serial.begin(9600);
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, "blynk.cloud", 80);
 
 //Set math model to calculate the PPM concentration and the value of constants
   MQ135.setRegressionMethod(1); //_PPM =  a*ratio^b
