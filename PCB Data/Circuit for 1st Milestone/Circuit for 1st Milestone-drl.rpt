@@ -1,0 +1,27 @@
+Drill report for D:\UIT\EL-490 Final Year Project\Circuit for 1st Milestone\Circuit for 1st Milestone.kicad_pcb
+Created on 01/02/23 20:25:23
+
+Copper Layer Stackup:
+    =============================================================
+    L1 :  F.Cu                      front
+    L2 :  B.Cu                      back
+
+
+Drill file 'Circuit for 1st Milestone-PTH.drl' contains
+    plated through holes:
+    =============================================================
+    T1  0.800mm  0.0315"  (10 holes)
+    T2  0.900mm  0.0354"  (4 holes)
+    T3  1.000mm  0.0394"  (14 holes)  (with 3 slots)
+    T4  1.020mm  0.0402"  (30 holes)
+    T5  1.100mm  0.0433"  (3 holes)
+
+    Total plated holes count 61
+
+
+Drill file 'Circuit for 1st Milestone-NPTH.drl' contains
+    unplated through holes:
+    =============================================================
+    T1  3.000mm  0.1181"  (4 holes)
+
+    Total unplated holes count 4
