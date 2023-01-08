@@ -35,7 +35,7 @@ char pass[]= "uit91258";
 #define ADC_Bit_Resolution 12     // For ESP32
 #define RatioMQ135CleanAir 3.6    // RS / R0 = 3.6 ppm
 
-float NH4;
+float NH4 = 3;
 int h, t, nh;
 
 
@@ -105,17 +105,29 @@ void setup(){
 
 
 void Task1Code(void * pvParameters){
+
   for(;;){
+  int currentTime = millis();
+  int prevTime;
+  if(currentTime-prevTime >= 3000){
+      prevTime = currentTime - millis();
+      if(NH4 == 3){
+        NH4 = 4;
+      }
+      else if(NH4 == 4){
+        NH4 = 3;
+      }
+  }
   //code for task1 infinite loop like loop()
   MQ135.update(); // Update data, the arduino will read the voltage from the analog pin
   MQ135.readSensor(); // Sensor will read PPM concentration using the model, a and b values set previously or from the setup
-  NH4 = MQ135.ppmprint(1);
   h = dht.readHumidity();
   t = dht.readTemperature();
   Blynk.run();
   Blynk.virtualWrite(V0, t);
   Blynk.virtualWrite(V1, h);
   Blynk.virtualWrite(V2,nh);
+
   }
 }
 void Task2Code(void * pvParameters){
@@ -151,7 +163,6 @@ nh=NH4;
 Serial.write(0xff);
 Serial.write(0xff);
 Serial.write(0xff);
-  
   }
 }
 
