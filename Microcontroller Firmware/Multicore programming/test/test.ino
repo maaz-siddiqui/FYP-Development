@@ -1,20 +1,17 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
-
+#include "DHT.h"
+#include "MQUnifiedsensor.h"// MQ135 Enable
+#include <HardwareSerial.h>
 
 #define BLYNK_TEMPLATE_ID "TMPLqo4MJG8x"
 #define BLYNK_DEVICE_NAME "IoT"
 #define BLYNK_AUTH_TOKEN "gkp3KEPrshlwgZ00bzexG33Jd64ayy_U"
 
-char ssid[]= "B-94";
-char pass[]= "d24b687c";
+char ssid[]= "MZ-Faculty";
+char pass[]= "uit91258";
 
-
-#include "DHT.h"
-#include "MQUnifiedsensor.h"// MQ135 Enable
-// #include <SoftwareSerial.h>
-#include <HardwareSerial.h>
 
 #ifndef ESP32
 #pragma message(THIS EXAMPLE IS FOR ESP32 ONLY!)
@@ -38,11 +35,35 @@ char pass[]= "d24b687c";
 #define ADC_Bit_Resolution 12     // For ESP32
 #define RatioMQ135CleanAir 3.6    // RS / R0 = 3.6 ppm
 
+float NH4;
+int h, t, nh;
+
+
 MQUnifiedsensor MQ135(board, Voltage_Resolution, ADC_Bit_Resolution, pin, type);
 DHT dht(dhtPin, DHTTYPE);
 
-void setup(void){
-  Serial.begin(9600);
+
+void setup(){
+  Serial.begin(115200);
+  xTaskCreatePinnedToCore(
+    Task1Code, //function to implement task
+    "Task1",  //name of task
+    10000,  //stack size in words
+    NULL, //Input params of task
+    0, //priority of task
+    NULL, //task handle
+    0 //cpu core
+  );
+  xTaskCreatePinnedToCore(
+    Task2Code, //function to implement task
+    "Task2",  //name of task
+    10000,  //stack size in words
+    NULL, //Input params of task
+    0, //priority of task
+    NULL, //task handle
+    1 //cpu core
+  );
+    Serial.begin(9600);
   // mySerial.begin(115200);
 
 //Set math model to calculate the PPM concentration and the value of constants
@@ -78,22 +99,29 @@ void setup(void){
   MQ135.setA(102.2); MQ135.setB(-2.473); // Configure the equation to to calculate NH4 concentration
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, "blynk.cloud", 80);
-  Blynk.run();
 
   delay(1000);
 }
 
-void loop(void){
+
+void Task1Code(void * pvParameters){
+  for(;;){
+  //code for task1 infinite loop like loop()
   MQ135.update(); // Update data, the arduino will read the voltage from the analog pin
   MQ135.readSensor(); // Sensor will read PPM concentration using the model, a and b values set previously or from the setup
   NH4 = MQ135.ppmprint(1);
-  delay(150);
   h = dht.readHumidity();
   t = dht.readTemperature();
+  Blynk.run();
   Blynk.virtualWrite(V0, t);
   Blynk.virtualWrite(V1, h);
   Blynk.virtualWrite(V2,nh);
-  //temprature page
+  }
+}
+void Task2Code(void * pvParameters){
+  for(;;){
+    //code for task1 infinite loop like loop()
+    //temprature page
 Serial.print("n5.val=");
   Serial.print(t);
 Serial.write(0xff);
@@ -112,7 +140,7 @@ Serial.write(0xff);
 Serial.write(0xff);
 Serial.write(0xff);
 Serial.print("z0.val=");
-  Serial.print(h);
+  Serial.print((h*100)/360);
 Serial.write(0xff);
 Serial.write(0xff);
 Serial.write(0xff);
@@ -123,6 +151,10 @@ nh=NH4;
 Serial.write(0xff);
 Serial.write(0xff);
 Serial.write(0xff);
+  
+  }
+}
 
+void loop(){
 
 }
