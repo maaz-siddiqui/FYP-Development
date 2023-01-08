@@ -41,6 +41,10 @@ char pass[]= "d24b687c";
 MQUnifiedsensor MQ135(board, Voltage_Resolution, ADC_Bit_Resolution, pin, type);
 DHT dht(dhtPin, DHTTYPE);
 
+float NH4 = 3;
+int h, t, nh;
+unsigned long prevTime = 0;
+
 void setup(void){
   Serial.begin(9600);
   // mySerial.begin(115200);
@@ -84,6 +88,16 @@ void setup(void){
 }
 
 void loop(void){
+  unsigned long currentTime = millis();
+  if(currentTime-prevTime >= 3000){
+      prevTime = currentTime - millis();
+      if(NH4 == 3){
+        NH4 = 4;
+      }
+      else if(NH4 == 4){
+        NH4 = 3;
+      }
+  }
   MQ135.update(); // Update data, the arduino will read the voltage from the analog pin
   MQ135.readSensor(); // Sensor will read PPM concentration using the model, a and b values set previously or from the setup
   NH4 = MQ135.ppmprint(1);

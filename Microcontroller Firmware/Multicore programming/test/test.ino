@@ -37,6 +37,8 @@ char pass[]= "uit91258";
 
 float NH4 = 3;
 int h, t, nh;
+unsigned long prevTime = 0;
+
 
 
 MQUnifiedsensor MQ135(board, Voltage_Resolution, ADC_Bit_Resolution, pin, type);
@@ -107,8 +109,7 @@ void setup(){
 void Task1Code(void * pvParameters){
 
   for(;;){
-  int currentTime = millis();
-  int prevTime;
+  unsigned long currentTime = millis();
   if(currentTime-prevTime >= 3000){
       prevTime = currentTime - millis();
       if(NH4 == 3){
@@ -134,30 +135,30 @@ void Task2Code(void * pvParameters){
   for(;;){
     //code for task1 infinite loop like loop()
     //temprature page
-Serial.print("n5.val=");
+Serial.print("n1.val=");
   Serial.print(t);
 Serial.write(0xff);
 Serial.write(0xff);
 Serial.write(0xff);
   // float bar = 100*(t/125+4);
-  Serial.print("j0.val=");
+  Serial.print("j1.val=");
   Serial.print(t);
 Serial.write(0xff);
 Serial.write(0xff);
 Serial.write(0xff);
 //humidity page
-Serial.print("x4.val=");
+Serial.print("n2.val=");
   Serial.print(h);
 Serial.write(0xff);
 Serial.write(0xff);
 Serial.write(0xff);
-Serial.print("z0.val=");
-  Serial.print((h*100)/360);
+Serial.print("j2.val=");
+  Serial.print((h);
 Serial.write(0xff);
 Serial.write(0xff);
 Serial.write(0xff);
 //Ammonia Page
-Serial.print("n6.val=");
+Serial.print("n3.val=");
 nh=NH4;
   Serial.print(nh);
 Serial.write(0xff);
